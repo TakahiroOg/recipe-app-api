@@ -10,7 +10,7 @@ from recipe.serializers import (
   RecipeDetailSerializer,
 )
 
-RECIPE_URL = reverse('recipe:recipe-list')
+RECIPES_URL = reverse('recipe:recipe-list')
 
 def detail_url(recipe_id):
   return reverse('recipe:recipe-detail', args=[recipe_id])
@@ -36,7 +36,7 @@ class PublicRecipeAPITests(TestCase):
     self.client = APIClient()
 
   def test_auth_required(self):
-    res = self.client.get(RECIPE_URL)
+    res = self.client.get(RECIPES_URL)
   
     self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
     
@@ -51,7 +51,7 @@ class PrivateRecipeAPITests(TestCase):
     create_recipe(user=self.user)
     create_recipe(user=self.user)
 
-    res = self.client.get(RECIPE_URL)
+    res = self.client.get(RECIPES_URL)
 
     recipes = Recipe.objects.all().order_by('-id')
     serializer = RecipeSerializer(recipes, many=True)
@@ -63,7 +63,7 @@ class PrivateRecipeAPITests(TestCase):
     create_recipe(user=other_user)
     create_recipe(user=self.user)
 
-    res = self.client.get(RECIPE_URL)
+    res = self.client.get(RECIPES_URL)
 
     recipes = Recipe.objects.filter(user=self.user)
     serializer = RecipeSerializer(recipes, many=True)
@@ -85,7 +85,7 @@ class PrivateRecipeAPITests(TestCase):
       'time_minutes': 30,
       'price': Decimal('5.99')
     }
-    res = self.client.post(RECIPE_URL, payload)
+    res = self.client.post(RECIPES_URL, payload)
 
     self.assertEqual(res.status_code, status.HTTP_201_CREATED)
     recipe = Recipe.objects.get(id=res.data['id'])

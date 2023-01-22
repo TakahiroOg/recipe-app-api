@@ -29,7 +29,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
   def perform_create(self, serializer):
     serializer.save(user=self.request.user)
 
-class TagViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class TagViewSet(mixins.DestroyModelMixin,
+                 mixins.UpdateModelMixin,
+                 mixins.ListModelMixin,
+                 viewsets.GenericViewSet
+                ):
   serializer_class = serializers.TagSerializer
   queryset = Tag.objects.all()
   authentication_classes = [TokenAuthentication]
